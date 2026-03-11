@@ -239,5 +239,89 @@ document.getElementById("difficulty").innerText=
 "Hardest Subject: "+hardest+
 
 " | Easiest Subject: "+easiest
+function searchStudent(){
+let input=document.getElementById("search").value.toLowerCase();
+}
+let colors=[];
+
+for(let i=0;i<percentages.length;i++){
+
+if(percentages[i]==Math.max(...percentages))
+colors.push("green");
+
+else if(percentages[i]<33)
+colors.push("red");
+
+else
+colors.push("blue");
+
+}
+  new Chart(ctx,{
+type:'bar',
+
+data:{
+labels:names,
+datasets:[{
+label:'Percentage',
+data:percentages,
+backgroundColor:colors
+}]
+},
+
+options:{
+plugins:{
+legend:{display:false}
+},
+scales:{
+y:{beginAtZero:true}
+}
+}
+
+});
+new Chart(pie,{
+type:'pie',
+
+data:{
+labels:['AA','AB','BB','BC','CC','DD','F'],
+
+datasets:[{
+data:gradeCounts,
+backgroundColor:[
+'green','blue','purple','orange','cyan','brown','red'
+]
+}]
+}
+
+});
+new Chart(lineCtx,{
+
+type:'line',
+
+data:{
+labels:subjects,
+
+datasets:[{
+label:'Average Marks',
+data:subjectAverage,
+borderColor:'blue',
+fill:false
+}]
+}
+
+});
+function darkMode(){
+document.body.classList.toggle("dark");
+}
+students.sort((a,b)=>b.percentage-a.percentage);
+
+students.forEach((s,i)=>{
+s.rank=i+1;
+});
+animation:{
+duration:2000
+}
+
+  
+
 
 }
