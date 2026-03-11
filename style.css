@@ -44,4 +44,9 @@ border:1px solid black;
 
 padding:6px;
 
+
+}
+body.dark{
+background:#121212;
+color:white
 }
