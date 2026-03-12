@@ -1,16 +1,18 @@
+let subjects=["Maths","Physics","Chemistry","English","Hindi"]
+
 let students=[]
 
 function createInputs(){
 
 let n=document.getElementById("numStudents").value
 
-let area=document.getElementById("inputArea")
+let div=document.getElementById("inputs")
 
-area.innerHTML=""
+div.innerHTML=""
 
 for(let i=0;i<n;i++){
 
-area.innerHTML+=`
+div.innerHTML+=`
 
 <h3>Student ${i+1}</h3>
 
@@ -18,15 +20,9 @@ area.innerHTML+=`
 
 <input placeholder="Name" id="name${i}">
 
-<input placeholder="Maths" id="m${i}">
+<br><br>
 
-<input placeholder="Physics" id="p${i}">
-
-<input placeholder="Chemistry" id="c${i}">
-
-<input placeholder="English" id="e${i}">
-
-<input placeholder="Hindi" id="h${i}">
+${subjects.map(s=>`<input placeholder="${s}" id="${s}${i}">`).join("")}
 
 <br><br>
 
@@ -42,105 +38,90 @@ students=[]
 
 let n=document.getElementById("numStudents").value
 
-let table=document.getElementById("resultTable")
+let tbody=document.querySelector("#resultTable tbody")
 
-table.innerHTML=`
-<tr>
-<th>Rank</th>
-<th>Roll No<th>
-<th>Name</th>
-<th>Percentage</th>
-<th>CGPA</th>
-<th>Grade</th>
-</tr>
-`
+tbody.innerHTML=""
 
 for(let i=0;i<n;i++){
 
 let roll=document.getElementById(`roll${i}`).value
-
 let name=document.getElementById(`name${i}`).value
 
-let m=+document.getElementById(`m${i}`).value
-let p=+document.getElementById(`p${i}`).value
-let c=+document.getElementById(`c${i}`).value
-let e=+document.getElementById(`e${i}`).value
-let h=+document.getElementById(`h${i}`).value
+let marks=[]
+let total=0
 
-let total=m+p+c+e+h
+subjects.forEach(s=>{
 
-let percentage=total/5
+let m=parseFloat(document.getElementById(`${s}${i}`).value)
 
-let cgpa=(percentage/9.5).toFixed(2)
+marks.push(m)
 
-let grade=""
-
-if(percentage>=90) grade="A"
-else if(percentage>=80) grade="B"
-else if(percentage>=70) grade="C"
-else if(percentage>=60) grade="D"
-else if(percentage>=40) grade="E"
-else grade="F"
-
-students.push({roll,name,percentage,grade,m,p,c,e,h})
-
-}
-
-students.sort((a,b)=>b.percentage-a.percentage)
-
-students.forEach((s,i)=>{
-
-let cgpa=(s.percentage/9.5).toFixed(2)
-
-table.innerHTML+=`
-<tr>
-<td>${i+1}</td>
-<td>${s.roll}</td>
-<td>${s.name}</td>
-<td>${s.percentage.toFixed(2)}</td>
-<td>${cgpa}</td>
-<td>${s.grade}</td>
-</tr>
-`
+total+=m
 
 })
 
-showTopper()
+let percentage=total/subjects.length
 
-showCharts()
+let cgpa=(percentage/9.5)
+
+let grade=""
+
+if(percentage>=90) grade="AA"
+else if(percentage>=80) grade="AB"
+else if(percentage>=70) grade="BB"
+else if(percentage>=60) grade="BC"
+else if(percentage>=50) grade="CC"
+else if(percentage>=33) grade="DD"
+else grade="F"
+
+students.push({
+
+roll,
+name,
+percentage,
+cgpa,
+grade,
+marks
+
+})
+
+let tr=document.createElement("tr")
+
+tr.innerHTML=`
+
+<td>${roll}</td>
+<td>${name}</td>
+<td>${percentage.toFixed(2)}</td>
+<td>${cgpa.toFixed(2)}</td>
+<td>${grade}</td>
+
+`
+
+tbody.appendChild(tr)
 
 }
 
-function showTopper(){
-
-let topper=students[0]
-
-let lowest=students[students.length-1]
-
-document.getElementById("topper").innerHTML=
-
-`Topper : ${topper.name} (${topper.percentage.toFixed(2)}%) <br>
-Lowest Performer : ${lowest.name} (${lowest.percentage.toFixed(2)}%)`
+showCharts()
 
 }
 
 function showCharts(){
 
 let names=students.map(s=>s.name)
+
 let percentages=students.map(s=>s.percentage)
+
+let topper=Math.max(...percentages)
 
 let colors=[]
 
 students.forEach(s=>{
 
-if(s.percentage==Math.max(...percentages))
-colors.push("green")
+if(s.percentage==topper) colors.push("green")
 
-else if(s.percentage<40)
-colors.push("red")
+else if(s.grade=="F") colors.push("red")
 
-else
-colors.push("yellow")
+else colors.push("yellow")
 
 })
 
@@ -159,10 +140,14 @@ backgroundColor:colors
 
 })
 
-let gradeCount={}
+let grades=students.map(s=>s.grade)
 
-students.forEach(s=>{
-gradeCount[s.grade]=(gradeCount[s.grade]||0)+1
+let count={}
+
+grades.forEach(g=>{
+
+count[g]=(count[g]||0)+1
+
 })
 
 new Chart(document.getElementById("pieChart"),{
@@ -170,29 +155,31 @@ new Chart(document.getElementById("pieChart"),{
 type:"pie",
 
 data:{
-labels:Object.keys(gradeCount),
+labels:Object.keys(count),
 datasets:[{
-data:Object.values(gradeCount)
+
+data:Object.values(count)
+
 }]
 }
 
 })
 
-let subjects=["Maths","Physics","Chemistry","English","Hindi"]
+let avg=[]
 
-let avg=[0,0,0,0,0]
+for(let i=0;i<subjects.length;i++){
+
+let sum=0
 
 students.forEach(s=>{
 
-avg[0]+=s.m
-avg[1]+=s.p
-avg[2]+=s.c
-avg[3]+=s.e
-avg[4]+=s.h
+sum+=s.marks[i]
 
 })
 
-avg=avg.map(a=>a/students.length)
+avg.push(sum/students.length)
+
+}
 
 new Chart(document.getElementById("avgChart"),{
 
@@ -201,14 +188,19 @@ type:"bar",
 data:{
 labels:subjects,
 datasets:[{
-label:" Subjects Average Marks",
+
+label:"Average Marks",
+
 data:avg,
+
 backgroundColor:[
-"orange"
+"blue",
+"green",
+"orange",
+"purple",
 "red"
-"purple"
-"green"
-"blue"
+]
+
 }]
 }
 
@@ -216,25 +208,8 @@ backgroundColor:[
 
 }
 
-function darkMode(){
+function toggleDark(){
+
 document.body.classList.toggle("dark")
-}
-
-function searchStudent(){
-
-let input=document.getElementById("search").value.toLowerCase()
-
-let rows=document.querySelectorAll("#resultTable tr")
-
-rows.forEach((row,i)=>{
-
-if(i==0) return
-
-let name=row.children[1].innerText.toLowerCase()
-
-row.style.display=name.includes(input)?"":"none"
-
-})
 
 }
-
