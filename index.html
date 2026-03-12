@@ -1,12 +1,13 @@
 <!DOCTYPE html>
 <html>
+
 <head>
 
 <title>Student Performance Analysis</title>
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
 <link rel="stylesheet" href="style.css">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 </head>
 
@@ -22,7 +23,6 @@
 <h2>Enter Number of Students</h2>
 
 <input type="number" id="numStudents">
-
 <button onclick="createInputs()">Create Input Form</button>
 
 <div id="inputArea"></div>
@@ -31,25 +31,22 @@
 
 <button onclick="generateResult()">Generate Result</button>
 
-<div class="tools">
+<br><br>
 
 <input type="text" id="search" placeholder="Search Student" onkeyup="searchStudent()">
 
 <button onclick="darkMode()">🌙 Dark Mode</button>
-
-</div>
 
 <h2>Result Table</h2>
 
 <table id="resultTable">
 
 <tr>
-
+<th>Rank</th>
 <th>Name</th>
 <th>Percentage</th>
 <th>CGPA</th>
 <th>Grade</th>
-
 </tr>
 
 </table>
@@ -75,5 +72,4 @@
 <script src="script.js"></script>
 
 </body>
-
 </html>
