@@ -2,7 +2,7 @@ body{
 
 font-family:Arial;
 margin:20px;
-background: linear gradient(to right,#e32f2fd ,#ffffff);
+background: linear-gradient(to right,#e32f2fd ,#ffffff);
 
 }
 
@@ -50,4 +50,5 @@ margin-top:30px;
 max-width:800px;
 
 }
+
 
