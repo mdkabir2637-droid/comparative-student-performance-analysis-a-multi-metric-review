@@ -14,6 +14,8 @@ area.innerHTML+=`
 
 <h3>Student ${i+1}</h3>
 
+<input placeholder="Roll No" id="roll${i}">
+
 <input placeholder="Name" id="name${i}">
 
 <input placeholder="Maths" id="m${i}">
@@ -45,6 +47,7 @@ let table=document.getElementById("resultTable")
 table.innerHTML=`
 <tr>
 <th>Rank</th>
+<th>Roll No<th>
 <th>Name</th>
 <th>Percentage</th>
 <th>CGPA</th>
@@ -53,6 +56,8 @@ table.innerHTML=`
 `
 
 for(let i=0;i<n;i++){
+
+let roll=document.getElementById(`roll${i}`).value
 
 let name=document.getElementById(`name${i}`).value
 
@@ -77,7 +82,7 @@ else if(percentage>=60) grade="D"
 else if(percentage>=40) grade="E"
 else grade="F"
 
-students.push({name,percentage,grade,m,p,c,e,h})
+students.push({roll,name,percentage,grade,m,p,c,e,h})
 
 }
 
@@ -90,6 +95,7 @@ let cgpa=(s.percentage/9.5).toFixed(2)
 table.innerHTML+=`
 <tr>
 <td>${i+1}</td>
+<td>${s.roll}</td>
 <td>${s.name}</td>
 <td>${s.percentage.toFixed(2)}</td>
 <td>${cgpa}</td>
@@ -134,7 +140,7 @@ else if(s.percentage<40)
 colors.push("red")
 
 else
-colors.push("steelblue")
+colors.push("yellow")
 
 })
 
@@ -195,9 +201,14 @@ type:"bar",
 data:{
 labels:subjects,
 datasets:[{
-label:"Average Marks",
+label:" Subjects Average Marks",
 data:avg,
-backgroundColor:"orange"
+backgroundColor:[
+"orange"
+"red"
+"purple"
+"green"
+"blue"
 }]
 }
 
@@ -226,3 +237,4 @@ row.style.display=name.includes(input)?"":"none"
 })
 
 }
+
