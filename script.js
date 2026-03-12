@@ -1,18 +1,24 @@
-let subjects=["Maths","Physics","Chemistry","English","Hindi"]
-
 let students=[]
+
+let subjects=[
+"Math",
+"Physics",
+"Chemistry",
+"English",
+"Hindi"
+]
 
 function createInputs(){
 
 let n=document.getElementById("numStudents").value
 
-let div=document.getElementById("inputs")
+let container=document.getElementById("inputs")
 
-div.innerHTML=""
+container.innerHTML=""
 
 for(let i=0;i<n;i++){
 
-div.innerHTML+=`
+container.innerHTML+=`
 
 <h3>Student ${i+1}</h3>
 
@@ -20,9 +26,13 @@ div.innerHTML+=`
 
 <input placeholder="Name" id="name${i}">
 
-<br><br>
+<br>
 
-${subjects.map(s=>`<input placeholder="${s}" id="${s}${i}">`).join("")}
+<input placeholder="Math" id="m${i}">
+<input placeholder="Physics" id="p${i}">
+<input placeholder="Chemistry" id="c${i}">
+<input placeholder="English" id="e${i}">
+<input placeholder="Hindi" id="h${i}">
 
 <br><br>
 
@@ -34,9 +44,9 @@ ${subjects.map(s=>`<input placeholder="${s}" id="${s}${i}">`).join("")}
 
 function generateResult(){
 
-students=[]
-
 let n=document.getElementById("numStudents").value
+
+students=[]
 
 let tbody=document.querySelector("#resultTable tbody")
 
@@ -47,22 +57,17 @@ for(let i=0;i<n;i++){
 let roll=document.getElementById(`roll${i}`).value
 let name=document.getElementById(`name${i}`).value
 
-let marks=[]
-let total=0
+let math=Number(document.getElementById(`m${i}`).value)
+let phy=Number(document.getElementById(`p${i}`).value)
+let chem=Number(document.getElementById(`c${i}`).value)
+let eng=Number(document.getElementById(`e${i}`).value)
+let hin=Number(document.getElementById(`h${i}`).value)
 
-subjects.forEach(s=>{
+let total=math+phy+chem+eng+hin
 
-let m=parseFloat(document.getElementById(`${s}${i}`).value)
+let percentage=total/5
 
-marks.push(m)
-
-total+=m
-
-})
-
-let percentage=total/subjects.length
-
-let cgpa=(percentage/9.5)
+let cgpa=(percentage/9.5).toFixed(2)
 
 let grade=""
 
@@ -74,139 +79,107 @@ else if(percentage>=50) grade="CC"
 else if(percentage>=33) grade="DD"
 else grade="F"
 
-students.push({
+students.push({roll,name,percentage,cgpa,grade,math,phy,chem,eng,hin})
 
-roll,
-name,
-percentage,
-cgpa,
-grade,
-marks
-
-})
-
-let tr=document.createElement("tr")
-
-tr.innerHTML=`
-
+let row=`<tr>
 <td>${roll}</td>
 <td>${name}</td>
 <td>${percentage.toFixed(2)}</td>
-<td>${cgpa.toFixed(2)}</td>
+<td>${cgpa}</td>
 <td>${grade}</td>
+</tr>`
 
-`
-
-tbody.appendChild(tr)
-
-}
-
-showCharts()
+tbody.innerHTML+=row
 
 }
 
-function showCharts(){
+makeCharts()
+
+}
+
+function makeCharts(){
 
 let names=students.map(s=>s.name)
-
 let percentages=students.map(s=>s.percentage)
 
-let topper=Math.max(...percentages)
+let top=Math.max(...percentages)
 
-let colors=[]
-
-students.forEach(s=>{
-
-if(s.percentage==topper) colors.push("green")
-
-else if(s.grade=="F") colors.push("red")
-
-else colors.push("yellow")
-
+let colors=percentages.map(p=>{
+if(p==top) return "green"
+if(p<33) return "red"
+return "yellow"
 })
 
-new Chart(document.getElementById("barChart"),{
-
-type:"bar",
-
+new Chart(barChart,{
+type:'bar',
 data:{
 labels:names,
 datasets:[{
-label:"Percentage",
+label:'Percentage',
 data:percentages,
 backgroundColor:colors
 }]
 }
-
 })
 
 let grades=students.map(s=>s.grade)
 
-let count={}
+let gradeCount={}
 
 grades.forEach(g=>{
-
-count[g]=(count[g]||0)+1
-
+gradeCount[g]=(gradeCount[g]||0)+1
 })
 
-new Chart(document.getElementById("pieChart"),{
-
-type:"pie",
-
+new Chart(pieChart,{
+type:'pie',
 data:{
-labels:Object.keys(count),
+labels:Object.keys(gradeCount),
 datasets:[{
-
-data:Object.values(count)
-
+data:Object.values(gradeCount)
 }]
 }
-
 })
 
-let avg=[]
-
-for(let i=0;i<subjects.length;i++){
-
-let sum=0
+let avg=[0,0,0,0,0]
 
 students.forEach(s=>{
-
-sum+=s.marks[i]
-
+avg[0]+=s.math
+avg[1]+=s.phy
+avg[2]+=s.chem
+avg[3]+=s.eng
+avg[4]+=s.hin
 })
 
-avg.push(sum/students.length)
+avg=avg.map(a=>a/students.length)
 
-}
-
-new Chart(document.getElementById("avgChart"),{
-
-type:"bar",
-
+new Chart(avgChart,{
+type:'bar',
 data:{
 labels:subjects,
 datasets:[{
-
-label:"Average Marks",
-
 data:avg,
-
-backgroundColor:[
-"blue",
-"green",
-"orange",
-"purple",
-"red"
-]
-
+backgroundColor:["orange","blue","purple","teal","brown"]
 }]
 }
-
 })
 
 }
+
+document.getElementById("search").addEventListener("keyup",function(){
+
+let filter=this.value.toLowerCase()
+
+let rows=document.querySelectorAll("#resultTable tbody tr")
+
+rows.forEach(row=>{
+
+let name=row.children[1].textContent.toLowerCase()
+
+row.style.display=name.includes(filter)?"":"none"
+
+})
+
+})
 
 function toggleDark(){
 
