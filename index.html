@@ -3,7 +3,7 @@
 
 <head>
 
-<title>Student Performance Analysis</title>
+<title>Comparative Performance Analysis</title>
 
 <link rel="stylesheet" href="style.css">
 
@@ -13,49 +13,63 @@
 
 <body>
 
-<div class="container">
+<h1>🎓 Comparative Performance Analysis : A Multi-Metric Review</h1>
 
-<h1>Comparative Students Performance Analysis</h1>
+<h3>Group No: 46</h3>
 
-<h3>Group 46</h3>
-<p>MD Kabir | Naman Kabra | Vedant Kailas Singare | Jeeva K.S</p>
+<p>
+MD Kabir | Naman Kabra | Vedant Kailas Singare | Jeeva K.S
+</p>
 
-<h2>Enter Number of Students</h2>
+<p>IIT PATNA | Computer Science & Data Analytics</p>
 
-<input type="number" id="numStudents">
-<button onclick="createInputs()">Create Input Form</button>
+<hr>
 
-<div id="inputArea"></div>
+<button onclick="toggleDark()">Toggle Dark Mode</button>
+
+<br><br>
+
+<input type="text" id="search" placeholder="Search Student">
+
+<br><br>
+
+<input type="number" id="numStudents" placeholder="Number of Students">
+
+<button onclick="createInputs()">Create Inputs</button>
+
+<div id="inputs"></div>
 
 <br>
 
 <button onclick="generateResult()">Generate Result</button>
 
-<br><br>
+<hr>
 
-<input type="text" id="search" placeholder="Search Student" onkeyup="searchStudent()">
+<table border="1" id="resultTable">
 
-<button onclick="darkMode()">🌙 Dark Mode</button>
-
-<h2>Result Table</h2>
-
-<table id="resultTable">
+<thead>
 
 <tr>
-<th>Rank</th>
+
+<th>Roll No</th>
+
 <th>Name</th>
+
 <th>Percentage</th>
+
 <th>CGPA</th>
+
 <th>Grade</th>
+
 </tr>
+
+</thead>
+
+<tbody></tbody>
 
 </table>
 
-<h2>Topper & Lowest Performer</h2>
-
-<p id="topper"></p>
-
-<h2>Student Performance Graph</h2>
+<h2>Student Performance</h2>
 
 <canvas id="barChart"></canvas>
 
@@ -63,13 +77,12 @@
 
 <canvas id="pieChart"></canvas>
 
-<h2>Subject Average Marks</h2>
+<h2>Subject Average</h2>
 
 <canvas id="avgChart"></canvas>
-
-</div>
 
 <script src="script.js"></script>
 
 </body>
+
 </html>
