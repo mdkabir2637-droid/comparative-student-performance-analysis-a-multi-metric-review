@@ -8,6 +8,12 @@ let subjects=[
 "Hindi"
 ]
 
+// Graph instances
+let barChartInstance
+let pieChartInstance
+let avgChartInstance
+
+
 function createInputs(){
 
 let n=document.getElementById("numStudents").value
@@ -23,7 +29,6 @@ container.innerHTML+=`
 <h3>Student ${i+1}</h3>
 
 <input placeholder="Roll No" id="roll${i}">
-
 <input placeholder="Name" id="name${i}">
 
 <br>
@@ -41,6 +46,7 @@ container.innerHTML+=`
 }
 
 }
+
 
 function generateResult(){
 
@@ -71,22 +77,34 @@ let cgpa=(percentage/9.5).toFixed(2)
 
 let grade=""
 
-if(percentage>=90) grade="AA"
-else if(percentage>=80) grade="AB"
-else if(percentage>=70) grade="BB"
-else if(percentage>=60) grade="BC"
-else if(percentage>=50) grade="CC"
-else if(percentage>=33) grade="DD"
+if(percentage>=85) grade="A"
+else if(percentage>=70) grade="B"
+else if(percentage>=55) grade="C"
+else if(percentage>=33) grade="D"
 else grade="F"
 
-students.push({roll,name,percentage,cgpa,grade,math,phy,chem,eng,hin})
+
+students.push({
+roll,
+name,
+percentage,
+cgpa,
+grade,
+math,
+phy,
+chem,
+eng,
+hin
+})
 
 let row=`<tr>
+
 <td>${roll}</td>
 <td>${name}</td>
 <td>${percentage.toFixed(2)}</td>
 <td>${cgpa}</td>
 <td>${grade}</td>
+
 </tr>`
 
 tbody.innerHTML+=row
@@ -97,6 +115,8 @@ makeCharts()
 
 }
 
+
+
 function makeCharts(){
 
 let names=students.map(s=>s.name)
@@ -105,33 +125,63 @@ let percentages=students.map(s=>s.percentage)
 let top=Math.max(...percentages)
 
 let colors=percentages.map(p=>{
+
 if(p==top) return "green"
 if(p<33) return "red"
 return "yellow"
+
 })
 
-new Chart(barChart,{
-type:'bar',
+
+// Destroy old charts
+
+if(barChartInstance) barChartInstance.destroy()
+if(pieChartInstance) pieChartInstance.destroy()
+if(avgChartInstance) avgChartInstance.destroy()
+
+
+
+// Student Performance Graph
+
+let barCtx=document.getElementById("barChart").getContext("2d")
+
+barChartInstance=new Chart(barCtx,{
+type:"bar",
 data:{
 labels:names,
 datasets:[{
-label:'Percentage',
+label:"Percentage",
 data:percentages,
 backgroundColor:colors
 }]
+},
+options:{
+scales:{
+y:{
+beginAtZero:true
+}
+}
 }
 })
+
+
+
+// Grade Pie Chart
 
 let grades=students.map(s=>s.grade)
 
 let gradeCount={}
 
 grades.forEach(g=>{
+
 gradeCount[g]=(gradeCount[g]||0)+1
+
 })
 
-new Chart(pieChart,{
-type:'pie',
+let pieCtx=document.getElementById("pieChart").getContext("2d")
+
+pieChartInstance=new Chart(pieCtx,{
+type:"pie",
 data:{
 labels:Object.keys(gradeCount),
 datasets:[{
@@ -140,30 +190,57 @@ data:Object.values(gradeCount)
 }
 })
 
+
+
+
+// Subject Average Graph
+
 let avg=[0,0,0,0,0]
 
 students.forEach(s=>{
+
 avg[0]+=s.math
 avg[1]+=s.phy
 avg[2]+=s.chem
 avg[3]+=s.eng
 avg[4]+=s.hin
+
 })
 
 avg=avg.map(a=>a/students.length)
 
-new Chart(avgChart,{
-type:'bar',
+let avgCtx=document.getElementById("avgChart").getContext("2d")
+
+avgChartInstance=new Chart(avgCtx,{
+type:"bar",
 data:{
 labels:subjects,
 datasets:[{
+label:"Average Marks",
 data:avg,
-backgroundColor:["orange","blue","purple","teal","brown"]
+backgroundColor:[
+"orange",
+"blue",
+"purple",
+"teal",
+"brown"
+]
 }]
+},
+options:{
+scales:{
+y:{
+beginAtZero:true
+}
+}
 }
 })
 
 }
+
+
+
+// Search Student
 
 document.getElementById("search").addEventListener("keyup",function(){
 
@@ -181,12 +258,12 @@ row.style.display=name.includes(filter)?"":"none"
 
 })
 
+
+
+// Dark Mode
+
 function toggleDark(){
 
 document.body.classList.toggle("dark")
 
 }
-
-
-
-
