@@ -185,6 +185,22 @@ avg[4]+=s.hin
 
 avg=avg.map(a=>a/students.length)
 
+// SUBJECT DIFFICULTY ANALYSIS
+
+let subjectNames = ["Math","Physics","Chemistry","English","Hindi"]
+
+let minIndex = avg.indexOf(Math.min(...avg))
+let maxIndex = avg.indexOf(Math.max(...avg))
+
+let hardestSubject = subjectNames[minIndex]
+let easiestSubject = subjectNames[maxIndex]
+
+document.getElementById("hardest").innerText =
+"Hardest Subject: " + hardestSubject
+
+document.getElementById("easiest").innerText =
+"Easiest Subject: " + easiestSubject
+
 
 avgChart=new Chart(document.getElementById("avgChart"),{
 
@@ -232,3 +248,4 @@ function toggleDark(){
 document.body.classList.toggle("dark")
 
 }
+
