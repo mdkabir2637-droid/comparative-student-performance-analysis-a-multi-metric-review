@@ -44,6 +44,7 @@ let table=document.getElementById("resultTable")
 
 table.innerHTML=`
 <tr>
+<th>Rank</th>
 <th>Name</th>
 <th>Percentage</th>
 <th>CGPA</th>
@@ -78,16 +79,25 @@ else grade="F"
 
 students.push({name,percentage,grade,m,p,c,e,h})
 
+}
+
+students.sort((a,b)=>b.percentage-a.percentage)
+
+students.forEach((s,i)=>{
+
+let cgpa=(s.percentage/9.5).toFixed(2)
+
 table.innerHTML+=`
 <tr>
-<td>${name}</td>
-<td>${percentage.toFixed(2)}</td>
+<td>${i+1}</td>
+<td>${s.name}</td>
+<td>${s.percentage.toFixed(2)}</td>
 <td>${cgpa}</td>
-<td>${grade}</td>
+<td>${s.grade}</td>
 </tr>
 `
 
-}
+})
 
 showTopper()
 
@@ -97,22 +107,36 @@ showCharts()
 
 function showTopper(){
 
-let topper=students.reduce((a,b)=>a.percentage>b.percentage?a:b)
+let topper=students[0]
 
-let lowest=students.reduce((a,b)=>a.percentage<b.percentage?a:b)
+let lowest=students[students.length-1]
 
 document.getElementById("topper").innerHTML=
 
-`Topper : ${topper.name} (${topper.percentage.toFixed(2)}%) 
-<br> Lowest Performer : ${lowest.name} (${lowest.percentage.toFixed(2)}%)`
+`Topper : ${topper.name} (${topper.percentage.toFixed(2)}%) <br>
+Lowest Performer : ${lowest.name} (${lowest.percentage.toFixed(2)}%)`
 
 }
 
 function showCharts(){
 
 let names=students.map(s=>s.name)
-
 let percentages=students.map(s=>s.percentage)
+
+let colors=[]
+
+students.forEach(s=>{
+
+if(s.percentage==Math.max(...percentages))
+colors.push("green")
+
+else if(s.percentage<40)
+colors.push("red")
+
+else
+colors.push("steelblue")
+
+})
 
 new Chart(document.getElementById("barChart"),{
 
@@ -123,7 +147,7 @@ labels:names,
 datasets:[{
 label:"Percentage",
 data:percentages,
-backgroundColor:"steelblue"
+backgroundColor:colors
 }]
 }
 
@@ -193,9 +217,9 @@ let rows=document.querySelectorAll("#resultTable tr")
 
 rows.forEach((row,i)=>{
 
-if(i===0) return
+if(i==0) return
 
-let name=row.children[0].innerText.toLowerCase()
+let name=row.children[1].innerText.toLowerCase()
 
 row.style.display=name.includes(input)?"":"none"
 
